@@ -6,7 +6,7 @@ import adminRoutes from "./routes/admin.route.js"
 import authRoutes from "./routes/auth.route.js"
 import songRoutes from "./routes/song.route.js"
 import albumRoutes from "./routes/album.route.js"
-import statsRoutes from "./routes/stats.route.js"
+import statsRoutes from "./routes/stat.route.js"
 import { connectDB } from "./lib/db.js";
 import { clerkMiddleware } from '@clerk/express'
 import fileUpload from "express-fileupload";
