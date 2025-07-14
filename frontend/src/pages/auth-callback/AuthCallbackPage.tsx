@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { useUser } from '@clerk/clerk-react'
 import { Loader } from 'lucide-react'

@@ -23,9 +23,6 @@ const HomePage = () => {
 	}, [fetchFeaturedSongs, fetchMadeForYouSongs, fetchTrendingSongs]);
 
 	useEffect(() => {
-		if (madeForYouSongs.length > 0 && featuredSongs.length > 0 && trendingSongs.length > 0) {
-			const allSongs = [...featuredSongs, ...madeForYouSongs, ...trendingSongs];
-		}
 	}, [ madeForYouSongs, trendingSongs, featuredSongs]);
 
 	return (
