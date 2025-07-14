@@ -1,7 +1,10 @@
 import { axiosInstance } from "@/lib/axios";
 import type { Message, User } from "@/types";
+import dotenv from "dotenv";
+
 import { create } from "zustand";
 import { io } from "socket.io-client";
+dotenv.config();
 
 interface ChatStore {
 	users: User[];
@@ -22,7 +25,7 @@ interface ChatStore {
 	setSelectedUser: (user: User | null) => void;
 }
 
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+const baseURL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const socket = io(baseURL, {
 	autoConnect: false, // only connect if user is authenticated
