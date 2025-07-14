@@ -1,3 +1,5 @@
+import { Album } from "../models/album.model.js";
+
 export const getAllAlbuns = async (req, res, next) => {
     try {
         const albuns = await Album.find().populate('songs');
