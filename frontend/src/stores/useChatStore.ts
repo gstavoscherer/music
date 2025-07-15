@@ -1,10 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import type { Message, User } from "@/types";
-import dotenv from "dotenv";
-
 import { create } from "zustand";
 import { io } from "socket.io-client";
-dotenv.config();
 
 interface ChatStore {
 	users: User[];

@@ -2,7 +2,7 @@ import { clerkClient } from "@clerk/express";
 
 export const protectRoute = async (req, res, next) => {
 	try {
-		const auth = req.auth?.();
+		const auth = await req.auth?.(); // ⬅️ await necessário aqui
 		if (!auth || !auth.userId) {
 			return res.status(401).json({ message: "Unauthorized - you must be logged in" });
 		}
@@ -15,7 +15,7 @@ export const protectRoute = async (req, res, next) => {
 
 export const requireAdmin = async (req, res, next) => {
 	try {
-		const auth = req.auth?.();
+		const auth = await req.auth?.(); // ⬅️ await necessário aqui também
 		if (!auth || !auth.userId) {
 			return res.status(401).json({ message: "Unauthorized - missing auth context" });
 		}
