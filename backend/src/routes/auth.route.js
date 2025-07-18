@@ -1,8 +1,19 @@
 import { Router } from "express";
-import { authCallback } from "../controller/auth.controller.js";
+import AuthController from "../controller/auth.controller.js";
 
-const router = Router();
+class AuthRoutes {
+  constructor() {
+    this.router = Router();
+    this.registerRoutes();
+  }
 
-router.post('/callback', authCallback)
+  registerRoutes() {
+    this.router.post("/auth/callback", AuthController.authCallback);
+  }
 
-export default router;
+  getRouter() {
+    return this.router;
+  }
+}
+
+export default new AuthRoutes().getRouter();

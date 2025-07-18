@@ -1,10 +1,20 @@
-import {Router} from "express";
-import { getAllAlbuns, getAlbumById } from "../controller/album.controller.js";
+import { Router } from "express";
+import AlbumController from "../controller/album.controller.js";
 
-const router =  Router();
+class AlbumRoutes {
+  constructor() {
+    this.router = Router();
+    this.registerRoutes();
+  }
 
-router.get('/', getAllAlbuns);
-router.get('/:id', getAlbumById);
+  registerRoutes() {
+    this.router.get("/album", AlbumController.getAllAlbuns);
+    this.router.get("/album/:id", AlbumController.getAlbumById);
+  }
 
+  getRouter() {
+    return this.router;
+  }
+}
 
-export default router
+export default new AlbumRoutes().getRouter();

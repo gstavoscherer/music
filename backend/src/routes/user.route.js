@@ -1,9 +1,29 @@
 import { Router } from "express";
-import { protectRoute } from "../middleware/auth.middleware.js";
-import { getAllUsers, getMessages } from "../controller/user.controller.js";
-const router = Router();
+import AuthMiddleware from "../middleware/auth.middleware.js";
+import UserController from "../controller/user.controller.js";
 
-router.get("/", protectRoute, getAllUsers);
-router.get("/messages/:userId", protectRoute, getMessages);
+class UserRoutes {
+  constructor() {
+    this.router = Router();
+    this.registerRoutes();
+  }
 
-export default router;
+  registerRoutes() {
+    this.router.get(
+      "/users/",
+      AuthMiddleware.protectRoute,
+      UserController.getAllUsers
+    );
+    this.router.get(
+      "/users/messages/:userId",
+      AuthMiddleware.protectRoute,
+      UserController.getMessages
+    );
+  }
+
+  getRouter() {
+    return this.router;
+  }
+}
+
+export default new UserRoutes().getRouter();
