@@ -22,7 +22,7 @@ interface ChatStore {
 	setSelectedUser: (user: User | null) => void;
 }
 
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const baseURL = import.meta.env.VITE_API_URL || "https://music.gustavoscherer.com/socket.io/";
 
 const socket = io(baseURL, {
 	autoConnect: false, // only connect if user is authenticated
