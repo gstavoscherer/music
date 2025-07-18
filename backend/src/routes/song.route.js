@@ -1,13 +1,29 @@
 import { Router } from "express";
-import { getAllSongs, getSongById, getFeaturedSongs, getMadeForYouSongs, getTrendingSongs } from "../controller/song.controller.js";
-import { protectRoute, requireAdmin } from "../middleware/auth.middleware.js";
-const router = Router();
+import AuthMiddleware from "../middleware/auth.middleware.js";
+import SongController from "../controller/song.controller.js";
 
-router.get('/', protectRoute, requireAdmin, getAllSongs)
-router.get('/featured', getFeaturedSongs);
-router.get('/made-for-you', getMadeForYouSongs);
-router.get('/trending', getTrendingSongs);
+class SongRoutes {
+  constructor() {
+    this.router = Router();
+    this.registerRoutes();
+  }
 
-router.get('/:id', getSongById);
+  registerRoutes() {
+    this.router.get(
+      "/songs",
+      AuthMiddleware.protectRoute,
+      AuthMiddleware.requireAdmin,
+      SongController.getAllSongs
+    );
+    this.router.get("/songs/featured", SongController.getFeaturedSongs);
+    this.router.get("/songs/made-for-you", SongController.getMadeForYouSongs);
+    this.router.get("/songs/trending", SongController.getTrendingSongs);
+    this.router.get("/songs/:id", SongController.getSongById);
+  }
 
-export default router;
+  getRouter() {
+    return this.router;
+  }
+}
+
+export default new SongRoutes().getRouter();

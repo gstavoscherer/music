@@ -1,9 +1,25 @@
-import {Router} from "express";
-import { protectRoute, requireAdmin } from "../middleware/auth.middleware.js";
-import { getStats } from "../controller/stat.controller.js";
+import { Router } from "express";
+import AuthMiddleware from "../middleware/auth.middleware.js";
+import StatController from "../controller/stat.controller.js";
 
-const router =  Router();
+class StatRoutes {
+  constructor() {
+    this.router = Router();
+    this.registerRoutes();
+  }
 
-router.get('/', protectRoute, requireAdmin, getStats)
+  registerRoutes() {
+    this.router.get(
+      "/stats",
+      AuthMiddleware.protectRoute,
+      AuthMiddleware.requireAdmin,
+      StatController.getStats
+    );
+  }
 
-export default router
+  getRouter() {
+    return this.router;
+  }
+}
+
+export default new StatRoutes().getRouter();

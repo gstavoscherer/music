@@ -1,16 +1,25 @@
 import { Router } from "express";
-import { requireAdmin, protectRoute } from "../middleware/auth.middleware.js";
-import { createSong,deleteSong,createAlbum, deleteAlbum, checkAdmin  } from "../controller/admin.controller.js";
+import AdminController from "../controller/admin.controller.js";
+import AuthMiddleware from "../middleware/auth.middleware.js";
 
-const router = Router();
+class AdminRoutes {
+  constructor() {
+    this.router = Router();
+    this.registerRoutes();
+  }
 
-router.use(protectRoute, requireAdmin);
+  registerRoutes() {
+    this.router.use(AuthMiddleware.protectRoute, AuthMiddleware.requireAdmin);
+    this.router.get("/admin/check", AdminController.checkAdmin);
+    this.router.post("/admin/songs", AdminController.createSong);
+    this.router.delete("/admin/songs/:id", AdminController.deleteSong);
+    this.router.post("/admin/albums", AdminController.createAlbum);
+    this.router.delete("/admin/albums/:id", AdminController.deleteAlbum);
+  }
 
-router.get('/check', checkAdmin);
+  getRouter() {
+    return this.router;
+  }
+}
 
-router.post('/songs', createSong)
-router.delete('/songs/:id', deleteSong);
-
-router.post('/albums', createAlbum);
-router.delete('/albums/:id', deleteAlbum);
-export default router;
+export default new AdminRoutes().getRouter();

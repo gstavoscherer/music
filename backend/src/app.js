@@ -1,15 +1,12 @@
+import "dotenv/config";
 import express from "express";
-import dotenv from "dotenv";
 import { clerkMiddleware } from "@clerk/express";
+import { createServer } from "http";
+import { SocketServer } from "./lib/socket.js";
+import { connectDB } from "./lib/db.js";
 import fileUpload from "express-fileupload";
 import path from "path";
 import cors from "cors";
-import fs from "fs";
-import { createServer } from "http";
-
-import { initializeSocket } from "./lib/socket.js";
-import { connectDB } from "./lib/db.js";
-
 import userRoutes from "./routes/user.route.js";
 import adminRoutes from "./routes/admin.route.js";
 import authRoutes from "./routes/auth.route.js";
@@ -17,68 +14,81 @@ import songRoutes from "./routes/song.route.js";
 import albumRoutes from "./routes/album.route.js";
 import statRoutes from "./routes/stat.route.js";
 
-dotenv.config();
+class App {
+  app;
 
-const __dirname = path.resolve();
-const app = express();
-const PORT = process.env.PORT;
-const httpServer = createServer(app);
+  constructor() {
+    this.dirname = path.resolve();
+    this.app = express();
+    this.setupMiddleware();
+    this.setupRoutes();
+  }
 
-initializeSocket(httpServer);
+  setupMiddleware() {
+    this.app.use(fileUpload());
+    this.app.use(express.json());
+    this.app.use(clerkMiddleware());
+    this.app.use(
+      cors({
+        origin: ["http://localhost:3000", "https://music.gustavoscherer.com"],
+        credentials: true,
+      })
+    );
+  }
 
-app.use(
-	cors({
-		origin: ["http://localhost:3000", "https://music.gustavoscherer.com"],
-		credentials: true,
-	})
-);
+  setupRoutes() {
+    this.app.use(
+      "/uploads",
+      express.static(path.resolve("..", "frontend", "uploads"))
+    );
 
-app.use(express.json());
-app.use(clerkMiddleware());
+    this.app.use("/api", [
+      adminRoutes,
+      authRoutes,
+      albumRoutes,
+      songRoutes,
+      statRoutes,
+      userRoutes,
+    ]);
 
-// ⛔️ NÃO USAMOS TEMPFILES. Salva direto em /frontend/uploads
-app.use(
-	fileUpload({
-		useTempFiles: false,
-		createParentPath: true,
-		limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
-	})
-);
+    this.app.use(
+      fileUpload({
+        useTempFiles: false,
+        createParentPath: true,
+        limits: { fileSize: 10 * 1024 * 1024 },
+      })
+    );
 
-// 🟢 Serve arquivos salvos no frontend
-app.use(
-	"/uploads",
-	express.static(path.resolve("..", "frontend", "uploads"))
-);
+    if (process.env.NODE_ENV === "production") {
+      const frontendPath = path.join(this.dirname, "../frontend/dist");
 
+      this.app.use(express.static(frontendPath));
 
-// 📦 Rotas
-app.use("/api/users", userRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/songs", songRoutes);
-app.use("/api/albums", albumRoutes);
-app.use("/api/stats", statRoutes);
+      this.app.get("*", (req, res) => {
+        res.sendFile(path.resolve(frontendPath, "index.html"));
+      });
+    }
+  }
 
-// 🚀 Frontend (produção)
-if (process.env.NODE_ENV === "production") {
-	app.use(express.static(path.join(__dirname, "../frontend/dist")));
-	app.get("*", (req, res) => {
-		res.sendFile(path.resolve(__dirname, "../frontend", "dist", "index.html"));
-	});
+  async start() {
+    const PORT = process.env.PORT || 3000;
+    const httpServer = createServer(this.app);
+
+    try {
+      await connectDB();
+      console.log("✅ Database connected");
+    } catch (error) {
+      console.error("❌ Database connection failed:", error);
+      process.exit(1);
+    }
+
+    new SocketServer(httpServer);
+
+    httpServer.listen(PORT, () => {
+      console.log("✅ Server running on port " + PORT);
+    });
+  }
 }
 
-// ❌ Handler de erro
-app.use((err, req, res, next) => {
-	res.status(500).json({
-		message:
-			process.env.NODE_ENV === "production"
-				? "Internal server error"
-				: err.message,
-	});
-});
-
-httpServer.listen(PORT, () => {
-	console.log("✅ Server running on port " + PORT);
-	connectDB();
-});
+const server = new App();
+server.start();
