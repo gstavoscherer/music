@@ -5,7 +5,7 @@ import { createServer } from "http";
 import { SocketServer } from "./lib/socket.js";
 import { connectDB } from "./lib/db.js";
 import fileUpload from "express-fileupload";
-import path from "path";
+import { dirname, join, resolve } from "path";
 import cors from "cors";
 import userRoutes from "./routes/user.route.js";
 import adminRoutes from "./routes/admin.route.js";
@@ -13,15 +13,20 @@ import authRoutes from "./routes/auth.route.js";
 import songRoutes from "./routes/song.route.js";
 import albumRoutes from "./routes/album.route.js";
 import statRoutes from "./routes/stat.route.js";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 class App {
   app;
 
   constructor() {
-    this.dirname = path.resolve();
     this.app = express();
     this.setupMiddleware();
     this.setupRoutes();
+    this.httpServer = createServer(this.app);
+    new SocketServer(this.httpServer);
   }
 
   setupMiddleware() {
@@ -39,7 +44,7 @@ class App {
   setupRoutes() {
     this.app.use(
       "/uploads",
-      express.static(path.resolve("..", "frontend", "uploads"))
+      express.static(resolve(__dirname, "..", "frontend", "uploads"))
     );
 
     this.app.use("/api", [
@@ -60,12 +65,11 @@ class App {
     );
 
     if (process.env.NODE_ENV === "production") {
-      const frontendPath = path.join(this.dirname, "../frontend/dist");
-
+      const frontendPath = join(__dirname, "..", "frontend", "dist");
       this.app.use(express.static(frontendPath));
 
       this.app.get("*", (req, res) => {
-        res.sendFile(path.resolve(frontendPath, "index.html"));
+        res.sendFile(join(frontendPath, "index.html"));
       });
     }
   }
@@ -82,9 +86,7 @@ class App {
       process.exit(1);
     }
 
-    new SocketServer(httpServer);
-
-    httpServer.listen(PORT, () => {
+    this.httpServer.listen(PORT, () => {
       console.log("✅ Server running on port " + PORT);
     });
   }

@@ -8,8 +8,8 @@ class AlbumRoutes {
   }
 
   registerRoutes() {
-    this.router.get("/album", AlbumController.getAllAlbuns);
-    this.router.get("/album/:id", AlbumController.getAlbumById);
+    this.router.get("/albums", AlbumController.getAllAlbuns);
+    this.router.get("/albums/:id", AlbumController.getAlbumById);
   }
 
   getRouter() {
