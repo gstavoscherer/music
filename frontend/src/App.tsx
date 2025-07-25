@@ -1,30 +1,30 @@
-import { Route, Routes } from "react-router-dom";
-import AuthCallbackPage from "./pages/auth-callback/AuthCallbackPage";
-import { AuthenticateWithRedirectCallback } from "@clerk/clerk-react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import MainLayout from "./layout/MainLayout";
-import ChatPage from "./pages/chat/ChatPage";
 import HomePage from "./pages/home/HomePage";
 import AlbumPage from "./pages/album/AlbumPage";
 import AdminPage from "./pages/admin/AdminPage";
-
-import { Toaster } from "react-hot-toast";
 import NotFoundPage from "./pages/404/NotFoundPage";
+import { Toaster } from "react-hot-toast";
+import LoginPage from "./pages/auth/LoginPage";
 
 function App() {
 	return (
 		<>
 			<Routes>
-				<Route
-					path='/sso-callback'
-					element={<AuthenticateWithRedirectCallback signUpForceRedirectUrl={"/auth-callback"} />}
-				/>
-				<Route path='/auth-callback' element={<AuthCallbackPage />} />
-				<Route path='/admin' element={<AdminPage />} />
+				{/* Páginas públicas */}
+				<Route path='/auth' element={<Navigate to='/auth/login' replace />} />
+				<Route path='/auth/login' element={<LoginPage />} />
+				<Route path='/auth/signup' element={<></>} />
 
-				<Route element={<MainLayout />}>
-					<Route path='/' element={<HomePage  />} />
-					<Route path='/chat' element={<ChatPage />} />
+				{/* Rotas protegidas */}
+				<Route
+					element={
+							<MainLayout />
+					}
+				>
+					<Route path='/' element={<HomePage />} />
 					<Route path='/albums/:albumId' element={<AlbumPage />} />
+					<Route path='/admin' element={<AdminPage />} />
 					<Route path='*' element={<NotFoundPage />} />
 				</Route>
 			</Routes>

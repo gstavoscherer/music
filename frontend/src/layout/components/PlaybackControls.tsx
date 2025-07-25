@@ -57,7 +57,7 @@ export const PlaybackControls = () => {
 					{currentSong && (
 						<>
 							<img
-								src={currentSong.imageUrl}
+								src={currentSong.image_url}
 								alt={currentSong.title}
 								className='w-14 h-14 object-cover rounded-md'
 							/>
@@ -66,7 +66,7 @@ export const PlaybackControls = () => {
 									{currentSong.title}
 								</div>
 								<div className='text-sm text-zinc-400 truncate hover:underline cursor-pointer'>
-									{currentSong.artist}
+									{currentSong.artist.name}
 								</div>
 							</div>
 						</>

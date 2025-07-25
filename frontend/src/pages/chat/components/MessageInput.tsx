@@ -12,7 +12,7 @@ const MessageInput = () => {
 
 	const handleSend = () => {
 		if (!selectedUser || !user || !newMessage) return;
-		sendMessage(selectedUser.clerkId, user.id, newMessage.trim());
+		sendMessage(selectedUser.id, user.id, newMessage.trim());
 		setNewMessage("");
 	};
 

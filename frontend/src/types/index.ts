@@ -1,43 +1,96 @@
 export interface Song {
-	_id: string;
+	id: number;
 	title: string;
-	artist: string;
-	albumId: string | null;
-	imageUrl: string;
-	audioUrl: string;
+	artist: Artist;
+	album: Album | null;
+	image_url?: string;
+	audio_url?: string;
 	duration: number;
-	createdAt: string;
-	updatedAt: string;
+	genre?: string;
+	release_year?: number;
+	created_at?: string;
+	updated_at?: string;
 }
-
 export interface Album {
-	_id: string;
+	id: number;
 	title: string;
-	artist: string;
-	imageUrl: string;
-	releaseYear: number;
+	artist: Artist;
+	image_url?: string;
+	release_year?: number;
+	genre?: string;
 	songs: Song[];
+	created_at?: string;
+	updated_at?: string;
 }
-
-export interface Stats {
-	totalSongs: number;
-	totalAlbums: number;
-	totalUsers: number;
-	totalArtists: number;
+export interface Artist {
+	id: number;
+	name: string;
+	created_at?: string;
+	updated_at?: string;
+}
+export interface User {
+	id: number;
+	username?: string;
+	email?: string;
+	password?: string;
+	full_name: string;
+	image_url?: string;
+	created_at?: string;
+	updated_at?: string;
 }
 
 export interface Message {
-	_id: string;
-	senderId: string;
-	receiverId: string;
+	id: number;
+	sender_id: User;
+	receiver_id: User;
 	content: string;
-	createdAt: string;
-	updatedAt: string;
+	created_at?: string;
+	updated_at?: string;
+}
+export interface Like {
+	id: number;
+	user: User;
+	song: Song;
+	created_at?: string;
+	updated_at?: string;
+}
+export interface Playlist {
+	id: number;
+	name: string;
+	description?: string;
+	image_url?: string;
+	user: User;
+	songs?: Song[];
+	created_at?: string;
+	updated_at?: string;
+}
+export interface PlaylistSong {
+	id: number;
+	playlist: Playlist;
+	song: Song;
+	created_at?: string;
+	updated_at?: string;
+}
+export interface SongArtist {
+	id: number;
+	song: Song;
+	artist: Artist;
+	created_at?: string;
+	updated_at?: string;
+}
+export interface Activity {
+	id: number;
+	song: Song;
+	user: User;
+	playedAt?: string;
+	created_at?: string;
+	updated_at?: string;
 }
 
-export interface User {
-	_id: string;
-	clerkId: string;
-	fullName: string;
-	imageUrl: string;
+
+export interface Stats {
+	total_songs: number;
+	total_albums: number;
+	total_users: number;
+	total_artists: number;
 }

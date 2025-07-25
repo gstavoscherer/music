@@ -3,18 +3,17 @@ import { buttonVariants } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { useMusicStore } from "@/stores/useMusicStore";
-import { SignedIn } from "@clerk/clerk-react";
-import { HomeIcon, Library, MessageCircle } from "lucide-react"
+import { HomeIcon, Library} from "lucide-react"
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const LeftSideBar = () => {
-
-    const {albums, fetchAlbums, isLoading} = useMusicStore()
+    const IMAGE_URL = import.meta.env.VITE_API_BASE_URL;
+    const {playlists, fetchPlaylists, isLoading} = useMusicStore()
 
     useEffect(() => {
-        fetchAlbums()
-    }, [fetchAlbums])
+        fetchPlaylists()
+    }, [fetchPlaylists])
 
   return (
     <div className="h-full flex flex-col gap-2">
@@ -31,18 +30,6 @@ const LeftSideBar = () => {
                     <span className="hidden md:inline">Home</span>
                 </Link>
 
-                <SignedIn>
-                    <Link to={"/chat"}
-                    className={cn(buttonVariants({
-                        variant: "ghost",
-                        className: "w-full justify-start text-white hover:bg-zinc-800"
-                    })
-                    )}
-                >
-                    <MessageCircle className="mr-2 size-5"/>
-                    <span className="hidden md:inline">Messages</span>
-                </Link>
-                </SignedIn>
             </div>
         </div>
         <div className="flex-1 rounded-lg bg-zinc-900 p-4">
@@ -57,24 +44,22 @@ const LeftSideBar = () => {
                     {isLoading ? (
                         <PlaylistSkeleton />
                     ) : (
-                        albums.map((album) => (
+                        playlists.map((playlist) => (
                             <Link
-                                key={album._id}
-                                to={`/albums/${album._id}`}
+                                key={playlist.id}
+                                to={`/playlist/${playlist.id}`}
                                 className="p-2 hover:bg-zinc-800 rounded-md flex items-center gap-3 group cursor-pointer"
                             >
                                 <img
-                                    src={album.imageUrl}
+                                    src={`${IMAGE_URL}${playlist.image_url}`}
                                     className="size-12 rounded-md flex-shrink-0 object-cover"
                                 />
                                 <div className="flex-1 min-w-0 hidden md:block">
                                     <p className="font-medium truncate">
-                                        {album.title}
-                                    </p>
-                                     <p className="text-sm text-zinc-400 truncate">
-                                        Album • {album.artist}
+                                        {playlist.name}
                                     </p>
                                 </div>
+
                             </Link>
                         ))
                     )}

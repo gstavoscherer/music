@@ -197,7 +197,7 @@ const AddSongDialog = () => {
 							<SelectContent className='bg-zinc-800 border-zinc-700'>
 								<SelectItem value='none'>No Album (Single)</SelectItem>
 								{albums.map((album) => (
-									<SelectItem key={album._id} value={album._id}>
+									<SelectItem key={album.id} value={String(album.id)}>
 										{album.title}
 									</SelectItem>
 								))}
