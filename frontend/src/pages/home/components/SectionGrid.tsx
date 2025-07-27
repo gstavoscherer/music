@@ -1,48 +1,40 @@
-import SectionGridSkeleton from "./SectionGridSkeleton";
-import { Button } from "@/components/ui/button";
-import PlayButton from "./PlayButton";
-import type {Song} from "@/types";
+"use client"
+
+import type { Song } from "@/types"
+import SectionGridSkeleton from "./SectionGridSkeleton"
+import SongCardWithExpandableMenu from "@/components/song-card-with-expandable-menu"
+import { Button } from "@/components/ui/button"
 
 type SectionGridProps = {
 	title: string;
 	songs: Song[];
 	isLoading: boolean;
 };
+
 const SectionGrid = ({ songs, title, isLoading }: SectionGridProps) => {
-	if (isLoading) return <SectionGridSkeleton />;
-	const IMAGE_URL = import.meta.env.VITE_API_BASE_URL;
+	if (isLoading) return <SectionGridSkeleton />
+
+	const IMAGE_URL = import.meta.env.VITE_API_BASE_URL
+
 	return (
-		<div className='mb-8'>
-			<div className='flex items-center justify-between mb-4'>
-				<h2 className='text-xl sm:text-2xl font-bold'>{title}</h2>
-				<Button variant='link' className='text-sm text-zinc-400 hover:text-white'>
+		<div className="mb-6">
+			<div className="flex items-center justify-between mb-3">
+				<h2 className="text-lg sm:text-xl font-semibold text-white">{title}</h2>
+				<Button variant="link" className="text-xs text-zinc-400 hover:text-white">
 					Show all
 				</Button>
 			</div>
 
-			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
-				{songs.map((song) => (
-					<div
+			<div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-8 gap-3">
+				{songs.map((song: Song) => (
+					<SongCardWithExpandableMenu
 						key={song.id}
-						className='bg-zinc-800/40 p-4 rounded-md hover:bg-zinc-700/40 transition-all group cursor-pointer'
-					>
-						<div className='relative mb-4'>
-							<div className='aspect-square rounded-md shadow-lg overflow-hidden'>
-								<img
-									src={`${IMAGE_URL}${song.image_url}`}
-									alt={song.title}
-									className='w-full h-full object-cover transition-transform duration-300 
-									group-hover:scale-105'
-								/>
-							</div>
-							<PlayButton song={song} />
-						</div>
-						<h3 className='font-medium mb-2 truncate'>{song.title}</h3>
-						<p className='text-sm text-zinc-400 truncate'>{song.artist.name}</p>
-					</div>
+						song={{ ...song, image_url: `${IMAGE_URL}${song.image_url}` }}
+					/>
 				))}
 			</div>
 		</div>
-	);
-};
-export default SectionGrid;
+	)
+}
+
+export default SectionGrid

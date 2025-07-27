@@ -12,8 +12,9 @@ const formatTime = (seconds: number) => {
 
 export const PlaybackControls = () => {
 	const { currentSong, isPlaying, togglePlay, playNext, playPrevious } = usePlayerStore();
+	const IMAGE_URL = import.meta.env.VITE_API_BASE_URL
 
-	const [volume, setVolume] = useState(75);
+	const [volume, setVolume] = useState(1);
 	const [currentTime, setCurrentTime] = useState(0);
 	const [duration, setDuration] = useState(0);
 	const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -42,6 +43,12 @@ export const PlaybackControls = () => {
 			audio.removeEventListener("ended", handleEnded);
 		};
 	}, [currentSong]);
+	useEffect(() => {
+		const audio = audioRef.current;
+		if (audio) {
+			audio.volume = volume / 33.3;
+		}
+	}, [volume]);
 
 	const handleSeek = (value: number[]) => {
 		if (audioRef.current) {
@@ -50,14 +57,14 @@ export const PlaybackControls = () => {
 	};
 
 	return (
-		<footer className='h-20 sm:h-24 bg-zinc-900 border-t border-zinc-800 px-4'>
+		<footer className='h-20 sm:h-24 bg-black border-t border-black px-4'>
 			<div className='flex justify-between items-center h-full max-w-[1800px] mx-auto'>
 				{/* currently playing song */}
 				<div className='hidden sm:flex items-center gap-4 min-w-[180px] w-[30%]'>
 					{currentSong && (
 						<>
 							<img
-								src={currentSong.image_url}
+								src={currentSong?.image_url.startsWith("http") ? currentSong?.image_url : `${IMAGE_URL}${currentSong?.image_url}`}
 								alt={currentSong.title}
 								className='w-14 h-14 object-cover rounded-md'
 							/>
@@ -151,16 +158,18 @@ export const PlaybackControls = () => {
 
 						<Slider
 							value={[volume]}
-							max={100}
-							step={1}
+							max={4}
+							step={0.01}
 							className='w-24 hover:cursor-grab active:cursor-grabbing'
 							onValueChange={(value) => {
-								setVolume(value[0]);
+								const clamped = Math.min(value[0], 10);
+								setVolume(clamped);
 								if (audioRef.current) {
-									audioRef.current.volume = value[0] / 100;
+									audioRef.current.volume = clamped / 33.3;
 								}
 							}}
 						/>
+
 					</div>
 				</div>
 			</div>

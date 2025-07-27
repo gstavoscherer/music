@@ -6,6 +6,7 @@ import AdminPage from "./pages/admin/AdminPage";
 import NotFoundPage from "./pages/404/NotFoundPage";
 import { Toaster } from "react-hot-toast";
 import LoginPage from "./pages/auth/LoginPage";
+import PlaylistPage from "@/pages/playlist/PlaylistPage.tsx";
 
 function App() {
 	return (
@@ -24,6 +25,7 @@ function App() {
 				>
 					<Route path='/' element={<HomePage />} />
 					<Route path='/albums/:albumId' element={<AlbumPage />} />
+					<Route path='/playlist/:playlistId' element={<PlaylistPage />} />
 					<Route path='/admin' element={<AdminPage />} />
 					<Route path='*' element={<NotFoundPage />} />
 				</Route>

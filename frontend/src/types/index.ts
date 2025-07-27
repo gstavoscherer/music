@@ -3,7 +3,7 @@ export interface Song {
 	title: string;
 	artist: Artist;
 	album: Album | null;
-	image_url?: string;
+	image_url: string;
 	audio_url?: string;
 	duration: number;
 	genre?: string;
@@ -59,10 +59,11 @@ export interface Playlist {
 	name: string;
 	description?: string;
 	image_url?: string;
-	user: User;
-	songs?: Song[];
+	user_id?: number;
 	created_at?: string;
 	updated_at?: string;
+	song_count: number;
+	songs: Song[];
 }
 export interface PlaylistSong {
 	id: number;

@@ -9,15 +9,16 @@ const Topbar = () => {
 
 	return (
 		<div
-			className='flex items-center justify-between p-4 sticky top-0 bg-zinc-900/75
-      backdrop-blur-md z-10
+			className='flex items-center justify-between p-4 sticky top-0 bg-black
+      backdrop-blur-md z-0
     '
 		>
-			<div className='flex gap-2 items-center'>
+			<Link to={'/'} className='flex items-center gap-4'><div className='flex gap-2 items-center'>
 				<img src='/spotify.png' className='size-8' alt='Spotify logo' />
 				Spotify
-			</div>
-			<div className='flex items-center gap-4'>
+			</div></Link>
+
+			<div >
 				{isAdmin && (
 					<Link to={"/admin"} className={cn(buttonVariants({ variant: "outline" }))}>
 						<LayoutDashboardIcon className='size-4  mr-2' />
